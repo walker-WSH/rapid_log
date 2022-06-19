@@ -19,5 +19,6 @@ int main()
 
 	uninit_log();
 
+	getchar();
 	return 0;
 }
