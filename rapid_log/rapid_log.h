@@ -26,10 +26,10 @@ template<typename... Arguments> void format_log(rapid_log_level level, const cha
 
 	} catch (std::exception &e) {
 		rapid_log(RAPID_LOG_WARN, file, func, line, e.what());
-		//assert(false);
+		assert(false && "log format error");
 	} catch (...) {
 		rapid_log(RAPID_LOG_WARN, file, func, line, "format error");
-		//assert(false);
+		assert(false && "log format error");
 	}
 }
 
