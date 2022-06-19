@@ -37,7 +37,7 @@ extern "C" void rapid_log(rapid_log_level level, const char *file, const char *f
 	SYSTEMTIME systime;
 	GetLocalTime(&systime);
 
-	boost::format format_time("%1%/%2%/%3% %4%:%5%:%6%:%7%(+%8%H)");
+	boost::format format_time("%1%/%2%/%3%-%4%:%5%:%6%+%7%(+%8%H)");
 	format_time % systime.wYear % systime.wMonth % systime.wDay;
 	format_time % systime.wHour % systime.wMinute % systime.wSecond;
 	format_time % systime.wMilliseconds % str_zone;
