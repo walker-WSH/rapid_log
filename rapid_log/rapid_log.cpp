@@ -1,10 +1,11 @@
 ﻿#include "rapid_log.h"
 #include "memory_map_writer.h"
 #include <Windows.h>
+#include <Shlwapi.h>
 #include <string>
 #include <mutex>
 
-#define MAX_LOG_LEN 4096
+#pragma comment(lib, "Shlwapi.lib")
 
 std::recursive_mutex log_lock;
 CMemoryMapWriter log_writer;
@@ -16,6 +17,12 @@ extern "C" bool init_log(const wchar_t *log_file)
 	::GetTimeZoneInformation(&tmp);
 
 	std::lock_guard<std::recursive_mutex> auto_lock(log_lock);
+
+	if (!str_zone.empty()) {
+		assert(false);
+		return false;
+	}
+
 	str_zone = std::to_string(tmp.Bias / (-60));
 	return log_writer.Open(log_file, true);
 }
@@ -53,6 +60,11 @@ std::string get_log_level(rapid_log_level level)
 
 extern "C" void rapid_log(rapid_log_level level, const char *file, const char *func, int line, const char *msg)
 {
+#ifndef DEBUG
+	if (level == RAPID_LOG_DEBUG)
+		return;
+#endif
+
 	if (str_zone.empty()) {
 		assert(false);
 		return;
@@ -66,8 +78,8 @@ extern "C" void rapid_log(rapid_log_level level, const char *file, const char *f
 	format_time % systime.wHour % systime.wMinute % systime.wSecond;
 	format_time % systime.wMilliseconds % str_zone;
 
-	boost::format format_msg("%1% %2% %3%(%4%) %5%\n");
-	format_msg % get_log_level(level) % format_time.str() % func % GetCurrentThreadId() % msg;
+	boost::format format_msg("%1% [%2%:%3%] %4%(%5%) %6% %7%\n");
+	format_msg % format_time.str() % PathFindFileNameA(file) % line % func % GetCurrentThreadId() % get_log_level(level) % msg;
 
 	std::string temp(format_msg.str());
 	OutputDebugStringA(temp.c_str());
