@@ -3,13 +3,13 @@
 
 int main()
 {
-	init_log(L"G:\\test.txt");
+	init_log(L"D:\\test.txt");
 
 	DWORD start = GetTickCount();
 	for (size_t i = 0; i < 2000; i++) {
 		LOG_INFO("This is for %s, num: %d", "wsh", 789);
 		LOG_INFO("This is for %1%, num: %2%", "test", 123);
-		LOG_INFO("This is for %s, num: %d", "demo", "test");
+		LOG_UISTEP("This is for %s, num: %d", "demo", "test");
 
 		LOG_INFO("This is for %1%, num: %d", "test", 123);
 		LOG_INFO("This is for %1%, num: %2%", "test");

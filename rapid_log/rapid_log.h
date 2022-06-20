@@ -7,6 +7,7 @@ enum rapid_log_level {
 	RAPID_LOG_DEBUG = 0,
 	RAPID_LOG_INFO,
 	RAPID_LOG_WARN,
+	RAPID_LOG_UISTEP,
 };
 
 extern "C" bool init_log(const wchar_t *log_file);
@@ -36,3 +37,4 @@ template<typename... Arguments> void format_log(rapid_log_level level, const cha
 #define LOG_DEBUG(fmt, ...) format_log(RAPID_LOG_DEBUG, __FILE__, __FUNCTION__, __LINE__, fmt, __VA_ARGS__)
 #define LOG_INFO(fmt, ...) format_log(RAPID_LOG_INFO, __FILE__, __FUNCTION__, __LINE__, fmt, __VA_ARGS__)
 #define LOG_WARN(fmt, ...) format_log(RAPID_LOG_WARN, __FILE__, __FUNCTION__, __LINE__, fmt, __VA_ARGS__)
+#define LOG_UISTEP(fmt, ...) format_log(RAPID_LOG_UISTEP, __FILE__, __FUNCTION__, __LINE__, fmt, __VA_ARGS__)

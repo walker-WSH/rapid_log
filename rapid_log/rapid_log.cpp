@@ -27,6 +27,30 @@ extern "C" void uninit_log()
 	log_writer.Close();
 }
 
+std::string get_log_level(rapid_log_level level) 
+{
+	std::string str_level;
+	switch (level) {
+	case RAPID_LOG_DEBUG:
+		str_level = "DEBUG";
+		break;
+	case RAPID_LOG_INFO:
+		str_level = "INFO";
+		break;
+	case RAPID_LOG_WARN:
+		str_level = "WARN";
+		break;
+	case RAPID_LOG_UISTEP:
+		str_level = "UISTEP";
+		break;
+	default:
+		str_level = "UNKNOWN";
+		assert(false);
+		break;
+	}
+	return str_level;
+}
+
 extern "C" void rapid_log(rapid_log_level level, const char *file, const char *func, int line, const char *msg)
 {
 	if (str_zone.empty()) {
@@ -42,25 +66,8 @@ extern "C" void rapid_log(rapid_log_level level, const char *file, const char *f
 	format_time % systime.wHour % systime.wMinute % systime.wSecond;
 	format_time % systime.wMilliseconds % str_zone;
 
-	std::string str_level;
-	switch (level) {
-	case RAPID_LOG_DEBUG:
-		str_level = "DEBUG";
-		break;
-	case RAPID_LOG_INFO:
-		str_level = "INFO";
-		break;
-	case RAPID_LOG_WARN:
-		str_level = "WARN";
-		break;
-	default:
-		str_level = "UNKNOWN";
-		assert(false);
-		break;
-	}
-
 	boost::format format_msg("%1% %2% %3%(%4%) %5%\n");
-	format_msg % str_level % format_time.str() % func % GetCurrentThreadId() % msg;
+	format_msg % get_log_level(level) % format_time.str() % func % GetCurrentThreadId() % msg;
 
 	std::string temp(format_msg.str());
 	OutputDebugStringA(temp.c_str());
